@@ -12,6 +12,9 @@ const  db = await  sqlite.open({
     driver:  sqlite3.Database
 });
 
+// add above the db.migrate command
+await db.exec(`PRAGMA foreign_keys = ON;`);
+
 await db.migrate();
 
 const PORT = process.env.PORT || 6003;
@@ -23,10 +26,30 @@ app.get('/api/makes', async function(req, res) {
     });
 });
 
+app.get('/api/cars',async function (req, res) {
+
+    const cars = await  db.all (`select name, model_name, price from car_make 
+    join car_model on car_make.id = car_model.make_id`);
+
+    res.json({
+        cars
+    });
+});
+
+
 
 app.listen(PORT, function(){
     console.log(`app started on ${PORT}`)
 })
+
+
+
+
+
+
+
+
+
 
 
 // find all the make of cars
